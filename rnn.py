@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import pickle as pkl
 from random import shuffle
 import argparse
@@ -174,7 +175,7 @@ def main(args):
 	f.close()
 
 def read_data(file_name):
-	with open(file_name,'r') as f:
+	with open(file_name,'rb') as f:
 		flow_data=pkl.load(f)
 	normal_flow=[]
 	anormal_flow=[]
@@ -198,8 +199,8 @@ def read_data(file_name):
 			if flow[0][i]==None:
 				flow[0][i]=0#avg_[i-2]
 	#normal_flow=normal_flow[:-len(normal_flow)/5]
-	train_data=normal_flow[:-len(normal_flow)/10]+anormal_flow[:-len(anormal_flow)/10]
-	test_data=normal_flow[-len(normal_flow)/10:]+anormal_flow[-len(anormal_flow)/10:]
+	train_data=normal_flow[:-len(normal_flow)//10]+anormal_flow[:-len(anormal_flow)//10]
+	test_data=normal_flow[-len(normal_flow)//10:]+anormal_flow[-len(anormal_flow)//10:]
 	#shuffle(train_data)
 	#shuffle(test_data)
 	train_input=[]
@@ -218,7 +219,7 @@ def read_data(file_name):
 	test_output=np.array(test_output)
 	return train_input,train_output,test_input,test_output
 def read_test_data(file_name):#change to read all data
-	with open(file_name,'r') as f:
+	with open(file_name,'rb') as f:
 		flow_data=pkl.load(f)
 	for flow in flow_data:
 		flow=[np.array(flow[2:]), np.array([0,1])]
@@ -243,5 +244,6 @@ def read_test_data(file_name):#change to read all data
 	return test_input,test_output
 
 if __name__=='__main__':
+
 	args=parse_args()
 	main(args)
