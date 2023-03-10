@@ -33,11 +33,11 @@ from datetime import datetime, timedelta
 import pickle as pkl
 from os import listdir
 
-def main(args, host='localhost', port=8086):
+def main(args, host="172.31.1.254", port=8086):
     """Instantiate a connection to the InfluxDB."""
-    user = 'root'
-    password = 'root'
-    dbname = 'INTdatabase'
+    user = 'admin'
+    password = '12345678'
+    dbname = 'int_telemetry_db'
     #dbuser = 'dpnm'
     #dbuser_password = 'dpnm'
     query = 'select * from '
@@ -51,8 +51,8 @@ def main(args, host='localhost', port=8086):
     print("Querying measurements name")
     result= client.query('show measurements')
     measurements=list(result.get_points())
-    measurements=[unicodedata.normalize('NFKD',measurement.values()[0]).encode('ascii',
-        'ignore')for measurement in measurements]
+    #measurements=[unicodedata.normalize('NFKD',measurement.values()[0]).encode('ascii',
+    #    'ignore')for measurement in measurements]
     print("get %d measurements\n"%len(measurements))
     
     if args.print_query:
@@ -181,7 +181,7 @@ def main(args, host='localhost', port=8086):
         if args.file_name+'.pkl' in listdir('.'): #check if pkl file already exist.
             response=None
             while response not in ['y','n']:
-                response=raw_input("flow data file is already existing. Do you wanna combine? (y/n) ")
+                response=input("flow data file is already existing. Do you wanna combine? (y/n) ")
             if response=='y':
                 with open(args.file_name+'.pkl', 'r') as f:
                     OriFlowData=pkl.load(f)
